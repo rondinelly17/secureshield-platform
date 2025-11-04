@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShield - Threat Intelligence Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SecureShield</h1>
+            </div>
+            <nav class="nav">
+                <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#file-scan" class="nav-link" onclick="showSection('file-scan')">File Analysis</a>
+                <a href="#ip-check" class="nav-link" onclick="showSection('ip-check')">IP Reputation</a>
+                <a href="#url-scan" class="nav-link" onclick="showSection('url-scan')">URL Analysis</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Dashboard -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <h2>Threat Intelligence Dashboard</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-shield"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>File Scans</h3>
+                            <span class="stat-number" id="file-scans-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>IP Checks</h3>
+                            <span class="stat-number" id="ip-checks-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>URL Analyses</h3>
+                            <span class="stat-number" id="url-analyses-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bug"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Threats Detected</h3>
+                            <span class="stat-number" id="threats-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Analysis</h3>
+                    <div class="actions-grid">
+                        <div class="action-card" onclick="showSection('file-scan')">
+                            <i class="fas fa-upload"></i>
+                            <span>Scan File</span>
+                        </div>
+                        <div class="action-card" onclick="showSection('ip-check')">
+                            <i class="fas fa-search-location"></i>
+                            <span>Check IP</span>
+                        </div>
+                        <div class="action-card" onclick="showSection('url-scan')">
+                            <i class="fas fa-link"></i>
+                            <span>Analyze URL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Scan Section -->
+        <section id="file-scan" class="section">
+            <div class="container">
+                <h2><i class="fas fa-file-upload"></i> File Analysis</h2>
+                
+                <div class="scan-container">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop File Here</h3>
+                        <p>Or click to select file (Max: 32MB)</p>
+                        <input type="file" id="fileInput" hidden>
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            Select File
+                        </button>
+                    </div>
+                    
+                    <div class="results" id="fileResults" style="display: none;">
+                        <h3>Scan Results</h3>
+                        <div class="result-content" id="fileResultContent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IP Check Section -->
+        <section id="ip-check" class="section">
+            <div class="container">
+                <h2><i class="fas fa-search-location"></i> IP Reputation Check</h2>
+                
+                <div class="scan-container">
+                    <div class="input-group">
+                        <input type="text" id="ipInput" placeholder="Enter IP address (e.g., 8.8.8.8)" class="input-field">
+                        <button class="btn btn-primary" onclick="checkIP()">Check IP</button>
+                    </div>
+                    
+                    <div class="results" id="ipResults" style="display: none;">
+                        <h3>IP Reputation Results</h3>
+                        <div class="result-content" id="ipResultContent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- URL Scan Section -->
+        <section id="url-scan" class="section">
+            <div class="container">
+                <h2><i class="fas fa-link"></i> URL Analysis</h2>
+                
+                <div class="scan-container">
+                    <div class="input-group">
+                        <input type="text" id="urlInput" placeholder="Enter URL (e.g., http://example.com)" class="input-field">
+                        <button class="btn btn-primary" onclick="analyzeURL()">Analyze URL</button>
+                    </div>
+                    
+                    <div class="results" id="urlResults" style="display: none;">
+                        <h3>URL Analysis Results</h3>
+                        <div class="result-content" id="urlResultContent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="loader"></div>
+            <p>Analyzing... Please wait</p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
